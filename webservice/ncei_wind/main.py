@@ -10,6 +10,7 @@ from random import randint
 
 from google.cloud import pubsub_v1
 from google.cloud import bigquery
+from google.cloud.exceptions import NotFound, Conflict
 
 
 app = Flask(__name__)
@@ -84,7 +85,13 @@ def callback(message):
                 tuple_row = tuple(row)
                 rows_to_insert.append(tuple_row)
 
-        table = bq_client.get_table(table_ref)
+        try:
+            table = bq_client.get_table(table_ref)
+        except NotFound:
+            create_table()
+            table = bq_client.get_table(table_ref)
+
+        print("Inserting {} rows into BigQuery ...".format(len(rows_to_insert)))
         errors = bq_client.insert_rows(table, rows_to_insert)
         if errors != []:
             print(errors)
@@ -103,11 +110,18 @@ def create_table():
         bigquery.SchemaField("Wind_Speed", "STRING", mode="NULLABLE"),
     ]
 
+
     table = bigquery.Table(table_ref, schema=schema)
-    table = bq_client.create_table(table)  # API request
-    print(
-        "Created table {}.{}.{}".format(table.project, table.dataset_id, table.table_id)
-    )
+    try:
+        bq_client.get_table(table)
+    except NotFound:
+        try:
+            table = bq_client.create_table(table)
+            print("Created table {}.{}.{}".format(table.project, table.dataset_id, table.table_id))
+            print("Going to sleep for 60 seconds to ensure data availability in newly created table")
+            time.sleep(60)
+        except Conflict:
+            pass
 
     return
 
