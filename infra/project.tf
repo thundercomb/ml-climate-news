@@ -21,12 +21,34 @@ resource "google_project_services" "climate_analytics" {
   depends_on = ["google_project.climate_analytics"]
 }
 
-resource "google_project_iam_binding" "climate_analytics" {
+resource "google_project_iam_binding" "cloud_build_app_engine" {
   project = var.project
   role    = "roles/appengine.appAdmin"
 
   members = [
     "serviceAccount:${google_project.climate_analytics.number}@cloudbuild.gserviceaccount.com",
+  ]
+
+  depends_on = ["google_project_services.climate_analytics"]
+}
+
+resource "google_project_iam_binding" "app_engine_pubsub" {
+  project = var.project
+  role    = "roles/pubsub.editor"
+
+  members = [
+    "serviceAccount:${google_project.climate_analytics.project_id}@appspot.gserviceaccount.com",
+  ]
+
+  depends_on = ["google_project_services.climate_analytics"]
+}
+
+resource "google_project_iam_binding" "app_engine_bigquery" {
+  project = var.project
+  role    = "roles/bigquery.dataEditor"
+
+  members = [
+    "serviceAccount:${google_project.climate_analytics.project_id}@appspot.gserviceaccount.com",
   ]
 
   depends_on = ["google_project_services.climate_analytics"]

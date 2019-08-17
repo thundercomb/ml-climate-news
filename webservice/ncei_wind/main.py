@@ -84,6 +84,7 @@ def callback(message):
                 tuple_row = tuple(row)
                 rows_to_insert.append(tuple_row)
 
+        table = bq_client.get_table(table_ref)
         errors = bq_client.insert_rows(table, rows_to_insert)
         if errors != []:
             print(errors)
@@ -127,4 +128,3 @@ table_id = os.getenv('TABLE')
 
 bq_client = bigquery.Client()
 table_ref = bq_client.dataset(dataset_id).table(table_id)
-table = bq_client.get_table(table_ref)

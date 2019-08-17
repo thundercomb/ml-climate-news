@@ -17,6 +17,9 @@ resource "google_cloudbuild_trigger" "climate_analytics" {
 
   description = "DEPLOY: ${each.value} service"
   filename    = "cloudbuild.yaml"
+  included_files = [
+    "*"
+  ]
 
   depends_on = ["google_sourcerepo_repository.climate_analytics"]
 }

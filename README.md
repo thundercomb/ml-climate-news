@@ -4,26 +4,37 @@ Analytics platform for climate change data
 
 # Prerequisites
 
-terraform 0.12
-gcloud
+## Tooling
+
+* terraform 0.12
+* gcloud
+* gsutil
+
+## Set up
+
+* gcp account with billing enabled
+* gcloud login
+* `terraform.tfvars` file with settings based on `terraform.tfvars.example` template
 
 # Install
 
+```
 git clone https://github.com/thundercomb/gcp-climate-analytics
 cd gcp-climate-analytics
 bash start.sh
+```
 
 # Run webservice
 
 Navigate to
 
-`http://ncei-wind-dot-<my-project-id>.appspot.com/`
+`https://ncei-wind-dot-<my-project-id>.appspot.com/`
 
 The web page should receive 'ok'
 
 Now ingest data by sending a request with
 
-`http://ncei-wind-dot-<my-project-id>.appspot.com/ingest`
+`https://ncei-wind-dot-<my-project-id>.appspot.com/ingest`
 
 The example data is now in a BigQuery table called `wind` in dataset `ncei`
 
