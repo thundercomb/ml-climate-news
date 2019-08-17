@@ -68,9 +68,8 @@ if [ $? -ne 0 ]; then
   gcloud app create --region=${REGION}
 fi
 
-echo "Checking if app instance is already running ..."
-gcloud app instances list --service=default 2>&1 | grep -q "Listed 0 items." \
-  || gcloud app instances list --service=default 2>&1 | grep -q "The following service was not found"
+echo "Checking if app is already running ..."
+curl https://${PROJECT}.appspot.com/ | grep -q "ok"
 if [ $? -eq 0 ]; then
   echo "It isn't."
   echo "Deploying app ..."
@@ -101,9 +100,8 @@ echo "Copying files from inception repo ..."
 cd ${source_repo}
 cp -a ${work_dir}/webservice/${webservice}/* .
 
-echo "Checking if app instance is already running ..."
-gcloud app instances list --service=${source_repo} 2>&1 | grep -q "Listed 0 items." \
-  || gcloud app instances list --service=${source_repo} 2>&1 | grep -q "The following service was not found"
+echo "Checking if app is already running ..."
+curl https://${source_repo}-dot-${PROJECT}.appspot.com/ | grep -q "ok"
 if [ $? -eq 0 ]; then
   echo "It isn't."
   echo "Pushing code to deploy app ..."

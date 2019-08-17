@@ -103,7 +103,7 @@ def create_table():
         bigquery.SchemaField("Wind_Speed", "STRING", mode="NULLABLE"),
     ]
 
-    table = bigquery.Table(table_id, schema=schema)
+    table = bigquery.Table(table_ref, schema=schema)
     table = bq_client.create_table(table)  # API request
     print(
         "Created table {}.{}.{}".format(table.project, table.dataset_id, table.table_id)
