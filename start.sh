@@ -45,9 +45,9 @@ cd webservice/default
 
 echo "Checking if dummy default web service is already running ..."
 curl https://${PROJECT}.appspot.com/ | grep -q "ok"
-if [ $? -eq 0 ]; then
+if [ $? -ne 0 ]; then
   echo "It isn't."
-  echo "Deploying app ..."
+  echo "Deploying dummy default web service ..."
   yes y | gcloud app deploy # auto approve
 
   echo "Initiating get request ..."
@@ -59,10 +59,10 @@ cd -
 
 # Push web service code
 
-echo "Now to deploy the web service"
+echo "Deploying our real web service ..."
 
 work_dir=$(pwd)
-temp_dir=/tmp/climate-analytics-webservice
+temp_dir=/tmp/${PROJECT}-webservice
 source_repo=ncei-wind
 webservice=ncei_wind
 
@@ -75,11 +75,11 @@ echo "Copying files from inception repo ..."
 cd ${source_repo}
 cp -a ${work_dir}/webservice/${webservice}/* .
 
-echo "Checking if app is already running ..."
-curl https://${source_repo}-dot-${PROJECT}.appspot.com/ | grep -q "ok"
-if [ $? -eq 0 ]; then
+echo "Checking if web service is already running ..."
+gcloud app instances list --service=${source_repo} 2>&1 | grep -q ^"${source_repo} "
+if [ $? -ne 0 ]; then
   echo "It isn't."
-  echo "Pushing code to deploy app ..."
+  echo "Pushing code to deploy web service ..."
   git add .
   git commit -m "Initial commit"
   git push origin master
