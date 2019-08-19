@@ -16,7 +16,7 @@ gsutil ls -p ${INCEPTION_PROJECT} | grep -q gs://${STATE_BUCKET}/
 if [ $? -ne 0 ]; then
   echo "Inception terraform state bucket does not exist."
   echo "Linking billing account to project ..."
-  gcloud alpha billing accounts projects link ${INCEPTION_PROJECT} --billing-account ${BILLING_ACCOUNT}
+  gcloud beta billing projects link ${INCEPTION_PROJECT} --billing-account ${BILLING_ACCOUNT}
   echo "Change to inception project ..."
   gcloud config set project ${INCEPTION_PROJECT}
   echo "Making storage bucket ..."
