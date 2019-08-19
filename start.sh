@@ -1,23 +1,6 @@
 # Set variables
 
-INCEPTION_PROJECT="ca-inception"
-
-STATE_BUCKET="climate-analytics-inception-terraform-state"
-REGION="europe-west2"
-PROJECT=$(awk -F"\"" '/^project / { print $2 }' infra/terraform.tfvars)
-BILLING_ACCOUNT=$(awk -F"\"" '/^billing_account / { print $2 }' infra/terraform.tfvars)
-
-if [ ${PROJECT} == "" ]; then
-  echo "PROJECT value is empty, please set it manually"
-  exit 1
-else
-  echo "The project will be ${PROJECT}"
-fi
-
-if [ ${BILLING_ACCOUNT} == "" ]; then
-  echo "BILLING_ACCOUNT value is empty, please set it manually"
-  exit 1
-fi
+source _vars.sh
 
 # Prepare the environment
 echo "Checking if inception project exists ..."
