@@ -60,15 +60,7 @@ gcloud config set project ${PROJECT}
 
 cd webservice/default
 
-echo "Checking if app has been created ..."
-gcloud app describe | grep -q "apps/${PROJECT}"
-if [ $? -ne 0 ]; then
-  echo "It hasn't."
-  echo "Creating app for region ${REGION}"
-  gcloud app create --region=${REGION}
-fi
-
-echo "Checking if app is already running ..."
+echo "Checking if dummy default web service is already running ..."
 curl https://${PROJECT}.appspot.com/ | grep -q "ok"
 if [ $? -eq 0 ]; then
   echo "It isn't."
