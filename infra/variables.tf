@@ -10,6 +10,10 @@ variable "owner_email" {
   type = string
 }
 
+variable "region" {
+  type = string
+}
+
 variable "repos" {
   type = set(string)
 }
