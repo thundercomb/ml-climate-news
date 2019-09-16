@@ -1,0 +1,9 @@
+runtime: python37
+service: clnn-news
+env_variables:
+    URL: http://climatenewsnetwork.net/feed/
+    PROJECT: climate-analytics-01
+    TOPIC: clnn-news
+    SUBSCRIPTION: clnn-news
+    DATASET: clnn
+    TABLE: news

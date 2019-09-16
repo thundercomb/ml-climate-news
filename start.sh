@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Set variables
 
 source _vars.sh
@@ -59,36 +61,42 @@ cd -
 
 # Push web service code
 
-echo "Deploying our real web service ..."
+echo "Deploying our real web services ..."
 
-work_dir=$(pwd)
-temp_dir=/tmp/${PROJECT}-webservice
-source_repo=ncei-wind
-webservice=ncei_wind
+cd webservice
 
-echo "Changing to temporary directory ..."
-mkdir $temp_dir && cd $temp_dir
-echo "Cloning web service repo ..."
-gcloud source repos clone ${source_repo}
+# Now deploy all webservices excluding default
+for webservice in $(ls | sed 's/default//'); do
 
-echo "Copying files from inception repo ..."
-cd ${source_repo}
-cp -a ${work_dir}/webservice/${webservice}/* .
+  work_dir=$(pwd)
+  temp_dir=/tmp/${PROJECT}-${webservice}
+  source_repo=${webservice/_/-}
 
-echo "Checking if web service is already running ..."
-gcloud app instances list --service=${source_repo} 2>&1 | grep -q ^"${source_repo} "
-if [ $? -ne 0 ]; then
-  echo "It isn't."
-  echo "Pushing code to deploy web service ..."
-  git add .
-  git commit -m "Initial commit"
-  git push origin master
-fi
+  echo "Changing to temporary directory ..."
+  mkdir $temp_dir && cd $temp_dir
+  echo "Cloning web service repo ..."
+  gcloud source repos clone ${source_repo}
 
-echo "Moving back to original directory ..."
-cd ${work_dir}
-echo "Deleting temporary directory ..."
-rm -rf ${temp_dir}
+  echo "Copying files from inception repo ..."
+  cd ${source_repo}
+  cp -a ${work_dir}/${webservice}/* .
+
+  echo "Checking if web service is already running ..."
+  gcloud app instances list --service=${source_repo} 2>&1 | grep -q ^"${source_repo} "
+  if [ $? -ne 0 ]; then
+    echo "It isn't."
+    echo "Pushing code to deploy web service ..."
+    git add .
+    git commit -m "Initial commit"
+    git push origin master
+  fi
+
+  echo "Moving back to original directory ..."
+  cd ${work_dir}
+  echo "Deleting temporary directory ..."
+  rm -rf ${temp_dir}
+
+done
 
 echo
 echo "*** Done! ***"

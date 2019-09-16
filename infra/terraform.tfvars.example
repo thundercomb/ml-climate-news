@@ -12,6 +12,3 @@ subscriptions = [
   "ncei-wind"
 ]
 dataset = "ncei"
-tables = [
-  "wind"
-]

@@ -16,12 +16,11 @@ resource "google_pubsub_subscription" "climate_analytics" {
 }
 
 resource "google_bigquery_dataset" "ncei" {
-  dataset_id                  = var.dataset
-  friendly_name               = var.dataset
-  project                     = var.project
-  description                 = "NCEI climate data"
-  location                    = "EU"
-  default_table_expiration_ms = 3600000
+  for_each      = var.datasets
+  dataset_id    = each.value
+  friendly_name = each.value
+  project       = var.project
+  location      = "EU"
 
   labels = {
     env = "default"

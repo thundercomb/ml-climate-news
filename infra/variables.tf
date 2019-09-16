@@ -26,10 +26,6 @@ variable "subscriptions" {
   type = set(string)
 }
 
-variable "dataset" {
-  type = string
-}
-
-variable "tables" {
+variable "datasets" {
   type = set(string)
 }
