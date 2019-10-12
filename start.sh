@@ -33,8 +33,15 @@ echo "Deploying infrastructure ..."
 
 terraform init -backend-config="bucket=${STATE_BUCKET}"
 terraform plan
-terraform apply -auto-approve
-
+DONE=1
+while [ $DONE -eq 1 ]; do
+  terraform apply -auto-approve
+  if [ $? -eq 0 ]; then
+    DONE=0
+  fi
+done
+GKE_CLUSTER_NAME=$(terraform output gke_cluster_name)
+GKE_CLUSTER_IP=$(terraform output gke_cluster_ip)
 cd -
 
 # Deploy default service (App Engine compulsory)
@@ -55,6 +62,8 @@ if [ $? -ne 0 ]; then
   echo "Initiating get request ..."
   curl https://${PROJECT}.appspot.com/
   echo
+else
+  echo "Looks good."
 fi
 
 cd -
@@ -82,13 +91,18 @@ for webservice in $(ls | sed 's/default//'); do
   cp -a ${work_dir}/${webservice}/* .
 
   echo "Checking if web service is already running ..."
-  gcloud app instances list --service=${source_repo} 2>&1 | grep -q ^"${source_repo} "
+  gcloud app services list 2>&1 | grep -q ^"${source_repo} "
   if [ $? -ne 0 ]; then
     echo "It isn't."
+    echo "Update project in app.yaml ..."
+    sed -i'.bck' "s/^    PROJECT:.*/    PROJECT: $PROJECT/g" app.yaml
+    rm app.yaml.bck  # sed command has to be portable but then creates unnecessary backup
     echo "Pushing code to deploy web service ..."
     git add .
     git commit -m "Initial commit"
     git push origin master
+  else
+    echo "Looks good."
   fi
 
   echo "Moving back to original directory ..."
@@ -97,6 +111,68 @@ for webservice in $(ls | sed 's/default//'); do
   rm -rf ${temp_dir}
 
 done
+
+cd ..
+# Installing Kubeflow
+
+echo "Checking if kubeflow cli is installed ..."
+which kfctl && kfctl version || {
+  echo "It isn't.";
+  echo "Installing kfctl ...";
+  opsys=darwin;
+  curl -s https://api.github.com/repos/kubeflow/kubeflow/releases/latest |\
+    grep browser_download |\
+    grep $opsys |\
+    cut -d '"' -f 4 |\
+    xargs curl -O -L && \
+    tar -zvxf kfctl_*_${opsys}.tar.gz;
+  mv kfctl /usr/local/bin && rm kfctl_*_${opsys}.tar.gz;
+}
+
+cd mlops
+
+echo "Getting GKE cluster credentials ..."
+gcloud beta container clusters get-credentials ${GKE_CLUSTER_NAME} --region ${REGION} --project ${PROJECT}
+
+echo "Checking if kubeflow config has been created already ..."
+export KFAPP="kf-${PROJECT}"
+if ! test -d $KFAPP; then
+  echo "It hasn't."
+  echo "Initialising, generating and applying configs ..."
+  export CONFIG="https://raw.githubusercontent.com/kubeflow/kubeflow/v0.6-branch/bootstrap/config/kfctl_k8s_istio.0.6.2.yaml"
+  kfctl init ${KFAPP} --config=${CONFIG} -V
+  cd ${KFAPP}
+  kfctl generate all -V
+  kfctl apply all -V
+  cd ..
+fi
+
+echo "Checking if kubectl cli is installed ..."
+which kubectl && kubectl version || {
+  echo "It isn't.";
+  echo "Installing kubectl ...";
+  curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl";
+  mv kubectl /usr/local/bin;
+}
+
+STATUS="NO"
+while [ "${STATUS}" != "" ]; do
+  echo "Monitoring pods ( kubectl get pods --all-namespaces ) ..."
+  STATUS=$(kubectl get pods --all-namespaces | awk '($4 != "Running" && $4 != "Completed" && $4 != "STATUS") { print $4 }')
+done
+
+echo "Setting up Istio ingress ..."
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
+export INGRESS_HOST=${GKE_CLUSTER_IP}
+echo "Creating firewall rules ..."
+gcloud compute firewall-rules create allow-gateway-http --allow tcp:$INGRESS_PORT --project ${PROJECT}
+gcloud compute firewall-rules create allow-gateway-https --allow tcp:$SECURE_INGRESS_PORT --project ${PROJECT}
+
+echo "Port-forwarding the ingress gateway ..."
+export NAMESPACE=istio-system
+kubectl port-forward -n istio-system svc/istio-ingressgateway 8080:80
+
 
 echo
 echo "*** Done! ***"

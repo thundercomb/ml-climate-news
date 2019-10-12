@@ -15,7 +15,12 @@ resource "google_project_services" "climate_analytics" {
     "cloudbuild.googleapis.com",
     "containerregistry.googleapis.com",
     "storage-api.googleapis.com",
-    "bigquerystorage.googleapis.com"
+    "bigquerystorage.googleapis.com",
+    "container.googleapis.com",
+    "compute.googleapis.com",
+    "oslogin.googleapis.com",
+    "iam.googleapis.com",
+    "iamcredentials.googleapis.com"
   ]
 
   depends_on = ["google_project.climate_analytics"]
@@ -43,7 +48,8 @@ resource "google_project_iam_binding" "editors" {
 
   members = [
     "serviceAccount:service-${google_project.climate_analytics.number}@containerregistry.iam.gserviceaccount.com",
-    "serviceAccount:${google_project.climate_analytics.project_id}@appspot.gserviceaccount.com"
+    "serviceAccount:${google_project.climate_analytics.project_id}@appspot.gserviceaccount.com",
+    "serviceAccount:${google_project.climate_analytics.number}@cloudservices.gserviceaccount.com",
   ]
 
   depends_on = ["google_project_services.climate_analytics",
