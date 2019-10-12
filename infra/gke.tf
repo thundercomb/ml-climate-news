@@ -32,8 +32,21 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
     oauth_scopes = [
       "https://www.googleapis.com/auth/logging.write",
       "https://www.googleapis.com/auth/monitoring",
+      "https://www.googleapis.com/auth/bigquery",
     ]
   }
 
   depends_on = ["google_container_cluster.primary"]
+}
+
+resource "google_project_iam_binding" "gke_kubeflow_jupyter_bigquery" {
+  project = var.project
+  role    = "roles/bigquery.admin"
+
+  members = [
+    "serviceAccount:${google_project.climate_analytics.number}-compute@developer.gserviceaccount.com"
+  ]
+
+  depends_on = ["google_project_services.climate_analytics",
+  "google_container_cluster.primary"]
 }

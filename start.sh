@@ -157,8 +157,9 @@ which kubectl && kubectl version || {
 
 STATUS="NO"
 while [ "${STATUS}" != "" ]; do
-  echo "Monitoring pods ( kubectl get pods --all-namespaces ) ..."
+  echo "Monitoring pods until they're all running, this could take a few minutes ..."
   STATUS=$(kubectl get pods --all-namespaces | awk '($4 != "Running" && $4 != "Completed" && $4 != "STATUS") { print $4 }')
+  sleep 10
 done
 
 echo "Setting up Istio ingress ..."
