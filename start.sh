@@ -162,16 +162,19 @@ while [ "${STATUS}" != "" ]; do
   sleep 10
 done
 
-echo "Setting up Istio ingress ..."
-export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
-export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
-export INGRESS_HOST=${GKE_CLUSTER_IP}
-echo "Creating firewall rules ..."
-gcloud compute firewall-rules create allow-gateway-http --allow tcp:$INGRESS_PORT --project ${PROJECT}
-gcloud compute firewall-rules create allow-gateway-https --allow tcp:$SECURE_INGRESS_PORT --project ${PROJECT}
+# Creating firewall rules are now managed by terraform, as they are predictably 31380 & 31390
 
-echo "Port-forwarding the ingress gateway ..."
+# echo "Setting up Istio ingress ..."
+# export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+# export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
+# export INGRESS_HOST=${GKE_CLUSTER_IP}
+# echo "Creating firewall rules ..."
+# gcloud compute firewall-rules create allow-gateway-http --allow tcp:$INGRESS_PORT --project ${PROJECT}
+# gcloud compute firewall-rules create allow-gateway-https --allow tcp:$SECURE_INGRESS_PORT --project ${PROJECT}
+
+echo "Port-forwarding the Istio ingress gateway ..."
 export NAMESPACE=istio-system
+echo "kubectl port-forward -n istio-system svc/istio-ingressgateway 8080:80"
 kubectl port-forward -n istio-system svc/istio-ingressgateway 8080:80
 
 
