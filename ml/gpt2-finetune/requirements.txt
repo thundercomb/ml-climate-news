@@ -1,2 +1,4 @@
 gpt_2_simple
+google-resumable-media
 google-cloud-bigquery
+google-cloud-storage

@@ -1,0 +1,12 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: iris-
+spec:
+  entrypoint: iris
+  templates:
+  - name: iris
+    container:
+      image: eu.gcr.io/climate-poc-01/iris:0.3
+      command: [python]
+      args: ["iris.py"]

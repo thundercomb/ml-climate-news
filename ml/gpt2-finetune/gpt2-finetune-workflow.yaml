@@ -1,32 +1,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  generateName: exit-handler-
+  generateName: gpt2-finetune-clnn-
 spec:
-  arguments:
-  entrypoint: exit-handler
-  onExit: greetings
-  serviceAccountName: pipeline-runner
+  entrypoint: finetune
   templates:
-  - container:
-      args:
-      - gpt2-finetuning-clnn.py
-      command:
-      - python3
-      image: eu.gcr.io/climate-poc-01/gpt2-finetune:0.6
-    name: greetings
-    outputs:
-      artifacts:
-      - name: mlpipeline-ui-metadata
-        optional: true
-        path: /mlpipeline-ui-metadata.json
-      - name: mlpipeline-metrics
-        optional: true
-        path: /mlpipeline-metrics.json
-  - dag:
-      tasks:
-      - arguments:
-        name: greetings
-        template: greetings
-    inputs:
-    name: exit-handler
+  - name: finetune
+    container:
+      image: eu.gcr.io/climate-poc-01/gpt2-finetune:0.9
+      command: [python3]
+      args: ["gpt2-finetuning-clnn.py"]
