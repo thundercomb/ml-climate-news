@@ -1,7 +1,7 @@
 project         = "climate-analytics"
 billing_account = "my-billing-account"
 owner_email     = "my-email@domain.com"
-region = "europe-west2"
+region          = "europe-west2"
 repos = [
   "ncei-wind"
 ]
@@ -11,4 +11,7 @@ topics = [
 subscriptions = [
   "ncei-wind"
 ]
-dataset = "ncei"
+datasets = [
+  "ncei"
+]
+ml_models_bucket = "ml-models-bucket"

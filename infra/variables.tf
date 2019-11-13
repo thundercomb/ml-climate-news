@@ -29,3 +29,7 @@ variable "subscriptions" {
 variable "datasets" {
   type = set(string)
 }
+
+variable "ml_models_bucket" {
+  type = string
+}
