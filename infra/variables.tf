@@ -14,7 +14,11 @@ variable "region" {
   type = string
 }
 
-variable "repos" {
+variable "app_repos" {
+  type = set(string)
+}
+
+variable "ml_repos" {
   type = set(string)
 }
 

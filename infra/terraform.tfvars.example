@@ -2,8 +2,11 @@ project         = "climate-analytics"
 billing_account = "my-billing-account"
 owner_email     = "my-email@domain.com"
 region          = "europe-west2"
-repos = [
+app_repos = [
   "ingest-ncei-wind"
+]
+ml_repos = [
+  "ml-iris"
 ]
 topics = [
   "ncei-wind"

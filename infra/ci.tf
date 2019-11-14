@@ -1,13 +1,13 @@
-resource "google_sourcerepo_repository" "climate_analytics" {
-  for_each = var.repos
+resource "google_sourcerepo_repository" "ci_climate_analytics" {
+  for_each = var.ml_repos
   name     = each.value
   project  = var.project
 
   depends_on = ["google_project_services.climate_analytics"]
 }
 
-resource "google_cloudbuild_trigger" "climate_analytics" {
-  for_each = var.repos
+resource "google_cloudbuild_trigger" "ci_climate_analytics" {
+  for_each = var.ml_repos
   project  = var.project
 
   trigger_template {
@@ -15,11 +15,11 @@ resource "google_cloudbuild_trigger" "climate_analytics" {
     repo_name   = each.value
   }
 
-  description = "DEPLOY: ${each.value} service"
+  description = "BUILD: ${each.value} image"
   filename    = "cloudbuild.yaml"
   included_files = [
     "*"
   ]
 
-  depends_on = ["google_sourcerepo_repository.climate_analytics"]
+  depends_on = ["google_sourcerepo_repository.ci_climate_analytics"]
 }
