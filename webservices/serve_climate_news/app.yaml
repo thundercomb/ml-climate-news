@@ -1,0 +1,10 @@
+runtime: python37
+service: climate-news
+env_variables:
+    PROJECT: $PROJECT
+    ML_MODELS_BUCKET: climate-poc-ml-models-bucket
+    MODEL_ARCHIVE: clnn-model.zip
+resources:
+  cpu: 1
+  memory_gb: 1
+  disk_size_gb: 1

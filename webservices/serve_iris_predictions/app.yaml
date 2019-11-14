@@ -1,0 +1,6 @@
+runtime: python37
+service: iris
+env_variables:
+    PROJECT: $PROJECT
+    ML_MODELS_BUCKET: climate-poc-ml-models-bucket
+    MODEL: iris.joblib
