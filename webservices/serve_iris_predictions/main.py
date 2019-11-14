@@ -39,6 +39,8 @@ def download():
 
     print("Ready to serve.")
 
+    return "model downloaded, ready to serve"
+
 def download_blob(bucket_name, source_blob_name, destination_file_name):
     """Downloads a blob from the bucket."""
     storage_client = storage.Client()

@@ -1,5 +1,5 @@
 runtime: python37
-service: climate-news
+service: serve-climate-news
 env_variables:
     PROJECT: $PROJECT
     ML_MODELS_BUCKET: climate-poc-ml-models-bucket
