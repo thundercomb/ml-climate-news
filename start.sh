@@ -132,7 +132,7 @@ done
 
 cd ..
 
-# Render ml scripts from templates
+# Render ml scripts from templates and push ml code to repos, triggering first builds
 
 bash _ml.sh
 

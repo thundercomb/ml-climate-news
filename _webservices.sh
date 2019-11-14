@@ -9,11 +9,11 @@ for webservice in $(ls -d ${ws_type}_*); do
 
   work_dir=$(pwd)
   temp_dir=/tmp/${PROJECT}-${webservice}
-  source_repo=${webservice/_/-}
+  source_repo=${webservice//_/-}
 
   echo "Changing to temporary directory ..."
   mkdir $temp_dir && cd $temp_dir
-  echo "Cloning web service repo ..."
+  echo "Cloning web service repo ${source_repo} ..."
   gcloud source repos clone ${source_repo}
 
   echo "Copying files from inception repo ..."

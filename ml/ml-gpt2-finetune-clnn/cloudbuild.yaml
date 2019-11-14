@@ -1,0 +1,4 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'eu.gcr.io/$PROJECT_ID/ml-gpt2-finetune-clnn', '.']
+images: ['eu.gcr.io/$PROJECT_ID/ml-gpt2-finetune-clnn']

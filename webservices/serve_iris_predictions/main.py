@@ -13,22 +13,31 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    global model
-
-    print("Loading model..")
-    client = storage.Client()
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(source_blob_name)
-    if blob.exists():
-        f = io.BytesIO()
-        blob.download_to_file(f)
-        model = load(f)
+    if not os.path.exists(destination_file_name):
+        return "Please download model: /download"
     else:
-        model = None
+        global model
 
-    print("Making predictions..")
-    results = model.predict(X)
-    return str(results)
+        print("Loading model..")
+        model = load(destination_file_name)
+
+        print("Making predictions..")
+        results = model.predict(X)
+        return str(results)
+
+@app.route('/download')
+def download():
+    print("Creating checkpoint directory if required..")
+    if not os.path.exists(checkpoint_dir):
+        os.makedirs(checkpoint_dir)
+    if os.path.exists(destination_file_name):
+        print("Removing old model..")
+        os.remove(destination_file_name)
+
+    print("Downloading model..")
+    download_blob(bucket_name, source_blob_name, destination_file_name)
+
+    print("Ready to serve.")
 
 def download_blob(bucket_name, source_blob_name, destination_file_name):
     """Downloads a blob from the bucket."""
@@ -57,11 +66,3 @@ destination_file_name = checkpoint_dir + source_blob_name
 print("Downloading iris dataset..")
 iris = datasets.load_iris()
 X, y = iris.data, iris.target
-
-print("Creating checkpoint directory..")
-if not os.path.exists(checkpoint_dir):
-    os.makedirs(checkpoint_dir)
-    print("Downloading model..")
-    download_blob(bucket_name, source_blob_name, destination_file_name)
-
-print("Ready to serve.")
