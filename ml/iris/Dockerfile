@@ -1,4 +1,5 @@
-FROM iwita/scikit:latest
+FROM faizanbashir/python-datascience:3.6
 COPY requirements.txt /
 COPY iris.py /
-RUN pip install -r requirements.txt
+WORKDIR /
+RUN pip3 install -r requirements.txt

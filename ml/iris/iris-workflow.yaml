@@ -7,6 +7,6 @@ spec:
   templates:
   - name: iris
     container:
-      image: eu.gcr.io/climate-poc-01/iris:0.3
+      image: eu.gcr.io/climate-poc-01/iris:0.5
       command: [python]
       args: ["iris.py"]

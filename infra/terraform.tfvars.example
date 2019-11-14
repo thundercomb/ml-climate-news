@@ -3,7 +3,7 @@ billing_account = "my-billing-account"
 owner_email     = "my-email@domain.com"
 region          = "europe-west2"
 repos = [
-  "ncei-wind"
+  "ingest-ncei-wind"
 ]
 topics = [
   "ncei-wind"

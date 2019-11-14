@@ -43,6 +43,6 @@ gpt2.finetune(sess,
 
 # zip the model dir and upload to storage
 shutil.make_archive('clnn-model', 'zip', 'checkpoint')
-upload_blob("ml-models-bucket",'clnn-model.zip','clnn-model.zip')
+upload_blob("climate-poc-ml-models-bucket",'clnn-model.zip','clnn-model.zip')
 
 gpt2.generate(sess)

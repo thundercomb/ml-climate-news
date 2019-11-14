@@ -50,7 +50,7 @@ echo "Default service is required by app engine - let's deploy it"
 echo "Setting local gcloud to project ${PROJECT}"
 gcloud config set project ${PROJECT}
 
-cd webservice/default
+cd webservices/default
 
 echo "Checking if dummy default web service is already running ..."
 curl https://${PROJECT}.appspot.com/ | grep -q "ok"
@@ -70,49 +70,15 @@ cd -
 
 # Push web service code
 
-echo "Deploying our real web services ..."
+echo "Deploying our ingestion microservices ..."
 
-cd webservice
+bash _webservices.sh ingest
 
-# Now deploy all webservices excluding default
-for webservice in $(ls | sed 's/default//'); do
+echo "Deploying our serving web services ..."
+echo "NOTE: Web services will fail to serve until machine learning models have been trained"
 
-  work_dir=$(pwd)
-  temp_dir=/tmp/${PROJECT}-${webservice}
-  source_repo=${webservice/_/-}
+bash _webservices.sh serve
 
-  echo "Changing to temporary directory ..."
-  mkdir $temp_dir && cd $temp_dir
-  echo "Cloning web service repo ..."
-  gcloud source repos clone ${source_repo}
-
-  echo "Copying files from inception repo ..."
-  cd ${source_repo}
-  cp -a ${work_dir}/${webservice}/* .
-
-  echo "Checking if web service is already running ..."
-  gcloud app services list 2>&1 | grep -q ^"${source_repo} "
-  if [ $? -ne 0 ]; then
-    echo "It isn't."
-    echo "Update project in app.yaml ..."
-    sed -i'.bck' "s/^    PROJECT:.*/    PROJECT: $PROJECT/g" app.yaml
-    rm app.yaml.bck  # sed command has to be portable but then creates unnecessary backup
-    echo "Pushing code to deploy web service ..."
-    git add .
-    git commit -m "Initial commit"
-    git push origin master
-  else
-    echo "Looks good."
-  fi
-
-  echo "Moving back to original directory ..."
-  cd ${work_dir}
-  echo "Deleting temporary directory ..."
-  rm -rf ${temp_dir}
-
-done
-
-cd ..
 # Installing Kubeflow
 
 echo "Checking if kubeflow cli is installed ..."
@@ -164,15 +130,16 @@ done
 
 # Creating firewall rules are now managed by terraform, as they are predictably 31380 & 31390
 
-# echo "Setting up Istio ingress ..."
-# export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
-# export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
-# export INGRESS_HOST=${GKE_CLUSTER_IP}
-# echo "Creating firewall rules ..."
-# gcloud compute firewall-rules create allow-gateway-http --allow tcp:$INGRESS_PORT --project ${PROJECT}
-# gcloud compute firewall-rules create allow-gateway-https --allow tcp:$SECURE_INGRESS_PORT --project ${PROJECT}
+cd ..
+
+# Render ml scripts from templates
+
+bash _ml.sh
+
+# Port forward the ingress gateway to access kubeflow dashboard
 
 echo "Port-forwarding the Istio ingress gateway ..."
+echo "When it says 'Forwarding from ..' point your browser at localhost:8080"
 export NAMESPACE=istio-system
 echo "kubectl port-forward -n istio-system svc/istio-ingressgateway 8080:80"
 kubectl port-forward -n istio-system svc/istio-ingressgateway 8080:80
