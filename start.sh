@@ -128,8 +128,6 @@ while [ "${STATUS}" != "" ]; do
   sleep 10
 done
 
-# Creating firewall rules are now managed by terraform, as they are predictably 31380 & 31390
-
 cd ..
 
 # Render ml scripts from templates and push ml code to repos, triggering first builds
