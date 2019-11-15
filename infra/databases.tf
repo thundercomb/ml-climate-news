@@ -15,7 +15,7 @@ resource "google_pubsub_subscription" "climate_analytics" {
   depends_on = ["google_pubsub_topic.climate_analytics"]
 }
 
-resource "google_bigquery_dataset" "ncei" {
+resource "google_bigquery_dataset" "climate_analytics" {
   for_each      = var.datasets
   dataset_id    = each.value
   friendly_name = each.value
