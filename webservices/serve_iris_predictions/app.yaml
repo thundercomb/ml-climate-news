@@ -3,4 +3,6 @@ service: serve-iris-predictions
 env_variables:
     PROJECT: $PROJECT
     ML_MODELS_BUCKET: climate-poc-ml-models-bucket
-    MODEL: iris.joblib
+    BUCKET_PREFIX: iris
+    MODEL_VERSION: latest
+    MODEL_NAME: iris.joblib

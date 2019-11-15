@@ -3,6 +3,8 @@ from sklearn import datasets
 from joblib import dump
 from google.cloud import storage
 
+import datetime
+
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
     """Uploads a file to the bucket."""
     storage_client = storage.Client()
@@ -11,18 +13,56 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
 
     blob.upload_from_filename(source_file_name)
 
-    print('File {} uploaded to {}.'.format(
-        source_file_name,
-        destination_blob_name))
+    print(f'File {source_file_name} uploaded to {destination_blob_name}.')
 
+def rename_blob(bucket_name, blob_name, new_name):
+    """Renames a blob."""
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket(bucket_name)
+    blob = bucket.blob(blob_name)
 
+    new_blob = bucket.rename_blob(blob, new_name)
+
+    print(f'Blob {blob.name} has been renamed to {new_blob.name}')
+
+def list_blobs(bucket_name, prefix):
+    """Lists all the blobs in the bucket."""
+    storage_client = storage.Client()
+
+    # Note: Client.list_blobs requires at least package version 1.17.0.
+    blobs = storage_client.list_blobs(bucket_name, prefix=prefix)
+
+    return blobs
+
+# Training
+
+bucket_name = "$ML_MODELS_NAME"
+datetime_now = f"{datetime.datetime.now():%Y%m%d_%H%M%S}"
+model_name = f"iris_{datetime_now}.joblib.latest"
+bucket_prefix = 'iris'
+
+print("Training model ...")
 clf = svm.SVC(gamma='scale')
 iris = datasets.load_iris()
 X, y = iris.data, iris.target
 clf.fit(X, y)
+dump(clf, model_name)
 
-dump(clf, 'iris.joblib')
+print(f"Finding previous version in bucket {bucket_name} ...")
+blob_names = list_blobs(bucket_name, bucket_prefix)
 
-upload_blob("$ML_MODELS_BUCKET",'iris.joblib','iris.joblib')
+previous_model_old_name = ""
+previous_model_new_name = ""
+for blob in blob_names:
+    if blob.name.find(".latest", -8) > 0:
+        previous_model_old_name = blob.name
+        previous_model_new_name = blob.name.replace(".latest","")
+        print(f"Renaming previous version {previous_model_old_name} to {previous_model_new_name} ...")
+        rename_blob(bucket_name, previous_model_old_name, previous_model_new_name)
+
+destination_blob_name = f"{bucket_prefix}/{model_name}"
+print(f"Uploading {model_name} to bucket {bucket_name} as {destination_blob_name} ...")
+upload_blob(bucket_name,model_name,destination_blob_name)
 
 print(clf.predict(X))
+print("Done.")
