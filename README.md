@@ -1,14 +1,14 @@
 # Purpose
 
-Climate News ML is an end-to-end machine learning platform serving climate fake news.
+Climate News ML is an end-to-end machine learning platform serving climate fake news.  
 Sadly, this proves that it is easier than ever to spread disinformation!
 
 To learn about the real science of Climate Change:
 
-[Royal Society: Climate Change Basics](https://royalsociety.org/topics-policy/projects/climate-change-evidence-causes/basics-of-climate-change/)
-[NASA: Evidence of Global Climate Change](https://climate.nasa.gov/evidence/)
-[IPCC: Climate Change report 2013](https://www.ipcc.ch/report/ar5/wg1/)
-[Science Net Links: The Science of Climate Change](http://sciencenetlinks.com/collections/climate-change/)
+[Royal Society: Climate Change Basics](https://royalsociety.org/topics-policy/projects/climate-change-evidence-causes/basics-of-climate-change/)  
+[NASA: Evidence of Global Climate Change](https://climate.nasa.gov/evidence/)  
+[IPCC: Climate Change report 2013](https://www.ipcc.ch/report/ar5/wg1/)  
+[Science Net Links: The Science of Climate Change](http://sciencenetlinks.com/collections/climate-change/)  
 
 # Prerequisites
 
