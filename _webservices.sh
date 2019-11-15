@@ -18,7 +18,9 @@ for webservice in $(ls -d ${ws_type}_*); do
 
   echo "Copying files from inception repo ..."
   cd ${source_repo}
+  shopt -s dotglob # include dotfiles
   cp -a ${work_dir}/${webservice}/* .
+  shopt -u dotglob # unset again
 
   echo "Checking if web service is already running ..."
   gcloud app services list 2>&1 | grep -q ^"${source_repo} "

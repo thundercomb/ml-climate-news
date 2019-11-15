@@ -29,7 +29,9 @@ for dir in $(ls); do
 
   echo "Copying files from inception repo ..."
   cd ${source_repo}
+  shopt -s dotglob # include dotfiles
   cp -a ${work_dir}/* .
+  shopt -u dotglob # unset again
 
   echo "Pushing code to deploy web service ..."
   git add .
