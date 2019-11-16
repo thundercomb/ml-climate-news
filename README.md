@@ -102,17 +102,13 @@ The models are stored in prefixed directories on GCS. Kubeflow provides [Minio](
 
 ## Serving
 
-The serving web services use the trained and finetuned models to generate information and present it to users. The serving web services run on Google App Engine. The iris sample web service is stable.
+The serving web services use the trained and finetuned models to generate information and present it to users. The serving web services run on Google App Engine.
 
-As with the ingestion services, navigate to
+The iris sample web service is a good entrypoint. Once you have trained a model using Kubeflow, navigate to the home page of the iris serving app:
 
 `https://serve-iris-predictions-dot-<my-project-id>.appspot.com/`
 
-This will tell you to first download the model.
-
-`https://serve-iris-predictions-dot-<my-project-id>.appspot.com/download`
-
-Once downloaded, the home endpoint will serve the predictions.
+You will be shown the iris model's targets and predictions.
 
 # DevOps and MLOps
 
