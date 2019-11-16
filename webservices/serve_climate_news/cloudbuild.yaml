@@ -1,6 +1,20 @@
 steps:
+- name: "gcr.io/cloud-builders/gsutil"
+  args: ['cp', 'gs://${_ML_MODELS_BUCKET}/clnn-news/*latest', '${_MODEL_ARCHIVE}']
+  dir: /workspace
+
+- name: "gcr.io/cloud-builders/gsutil"
+  entrypoint: 'sh'
+  args:
+  - '-c'
+  - |
+    mkdir checkpoint && mv ${_MODEL_ARCHIVE} checkpoint && cd checkpoint && unzip ${_MODEL_ARCHIVE} && rm ${_MODEL_ARCHIVE}
+
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy"]
   dir: /workspace
 
+substitutions:
+    _ML_MODELS_BUCKET: climate-poc-ml-models-bucket
+    _MODEL_ARCHIVE: clnn-model.zip
 timeout: "1600s"
