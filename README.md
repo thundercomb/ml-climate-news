@@ -3,6 +3,8 @@
 ML Climate News is an end-to-end machine learning platform serving climate fake news.  
 Sadly, this proves that it is easier than ever to spread disinformation!
 
+We want to raise awareness about this, and link to more credible sources.
+
 To learn about the real science of Climate Change:
 
 [Royal Society: Climate Change Basics](https://royalsociety.org/topics-policy/projects/climate-change-evidence-causes/basics-of-climate-change/)  
@@ -10,9 +12,7 @@ To learn about the real science of Climate Change:
 [IPCC: Climate Change report 2013](https://www.ipcc.ch/report/ar5/wg1/)  
 [Science Net Links: The Science of Climate Change](http://sciencenetlinks.com/collections/climate-change/)  
 
-*Note:*
-
-The platform runs on GCP and is essentially multi-purpose machine learning, making it possible to ingest any kind of data, store it, train models, and serve them as apps.
+It also doubles up as a multi-purpose machine learning platform running on GCP. It can ingest any kind of data, store it, train models, and serve them as apps.
 
 # Prerequisites
 
