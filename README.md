@@ -12,7 +12,7 @@ To learn about the real science of Climate Change:
 [IPCC: Climate Change report 2013](https://www.ipcc.ch/report/ar5/wg1/)  
 [Science Net Links: The Science of Climate Change](http://sciencenetlinks.com/collections/climate-change/)  
 
-It also doubles up as a multi-purpose machine learning platform running on GCP. It can ingest any kind of data, store it, train models, and serve them as apps.
+It also doubles up as a *multi-purpose machine learning platform* running on GCP. It can ingest any kind of data, store it, train models, and serve them as apps.
 
 # Prerequisites
 
