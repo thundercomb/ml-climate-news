@@ -1,6 +1,6 @@
 # Purpose
 
-Climate News ML is an end-to-end machine learning platform serving climate fake news.  
+ML Climate News is an end-to-end machine learning platform serving climate fake news.  
 Sadly, this proves that it is easier than ever to spread disinformation!
 
 To learn about the real science of Climate Change:
