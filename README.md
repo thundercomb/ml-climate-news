@@ -10,6 +10,10 @@ To learn about the real science of Climate Change:
 [IPCC: Climate Change report 2013](https://www.ipcc.ch/report/ar5/wg1/)  
 [Science Net Links: The Science of Climate Change](http://sciencenetlinks.com/collections/climate-change/)  
 
+*Note:*
+
+The platform runs on GCP and is essentially multi-purpose machine learning, making it possible to ingest any kind of data, store it, train models, and serve them as apps.
+
 # Prerequisites
 
 ## Tooling
@@ -86,15 +90,15 @@ By default ingestion data is stored in BigQuery. Sources are logically separated
 
 Machine Learning requires a platform on which to run experiments and save models that make the cut. Kubeflow provides a number of capabilities through Katib experiments, Argo workflows, and Kubeflow pipelines.
 
-The current process is still immature. We use a simple Argo workflow, which can be uploaded via the Kubeflow dashboad, to train a model and save it as a versioned artefact on GCS.
+We use a simple Argo workflow, which can be uploaded via the Kubeflow dashboad, to train a model and save it as a versioned artefact on GCS.
 
-The iris dataset is used as an example to test the workflow for the real process, which finetunes OpenAI's [GPT-2](https://openai.com/blog/better-language-models/) using Minimaxir's (gpt_2_simple)[https://github.com/minimaxir/gpt-2-simple] library.
+The iris dataset is used as an example to test the workflow for the real process, which finetunes OpenAI's [GPT-2](https://openai.com/blog/better-language-models/) using Minimaxir's [gpt_2_simple](https://github.com/minimaxir/gpt-2-simple) library.
 
 Current limitations are in artefact passing when using Argo. The training script manages it, whereas this should be externalised to the pipeline config.
 
 ## Models
 
-The models are stored in prefixed directories on GCS. Kubeflow provides [Minio](https://min.io/), which is another option.
+The models are stored in prefixed directories on GCS. Kubeflow provides [Minio](https://min.io/) out of the box, which is another option. The downside of using Minio rather than GCS is that GCS is cheap, while Minio requires the cluster to be running.
 
 ## Serving
 
@@ -104,7 +108,7 @@ As with the ingestion services, navigate to
 
 `https://serve-iris-predictions-dot-<my-project-id>.appspot.com/`
 
-This should tell you to first download the model.
+This will tell you to first download the model.
 
 `https://serve-iris-predictions-dot-<my-project-id>.appspot.com/download`
 
@@ -114,9 +118,9 @@ Once downloaded, the home endpoint will serve the predictions.
 
 The platform provides the building blocks to manage code and ml model artefacts according to DevOps and MLOps principles.
 
-Cloud Build CI pipelines build ML images and push them to Google's Container Registry (gcr.io).
-Cloud Build CD pipelines deploys code repos for ingestion and serving services to Google App Engine.
-Kubeflow provides choice in the form of Kubeflow Pipelines, Argo, and Katib in terms of how to experiment and train models.
+ * Cloud Build CI pipelines build ML images and push them to Google's Container Registry (gcr.io).
+ * Cloud Build CD pipelines deploy code repos for ingestion and serving services to Google App Engine.
+ * Kubeflow provides choice in the form of Kubeflow Pipelines, Argo, and Katib in terms of how to experiment and train models.
 
 There is much, much more to DevOps and MLOps. More about that another time...
 
