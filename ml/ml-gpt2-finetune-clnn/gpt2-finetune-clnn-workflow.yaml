@@ -9,4 +9,4 @@ spec:
     container:
       image: eu.gcr.io/climate-poc-01/ml-gpt2-finetune-clnn:latest
       command: [python3]
-      args: ["gpt2-finetuning-clnn.py"]
+      args: ["gpt2-finetune-clnn.py"]
