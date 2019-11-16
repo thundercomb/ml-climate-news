@@ -1,6 +1,14 @@
 steps:
+- name: "gcr.io/cloud-builders/gsutil"
+  args: ['cp', 'gs://${_ML_MODELS_BUCKET}/iris/*latest', '${_MODEL_ARCHIVE}']
+  dir: /workspace
+
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy"]
   dir: /workspace
+
+substitutions:
+    _ML_MODELS_BUCKET: climate-poc-ml-models-bucket
+    _MODEL_ARCHIVE: iris.joblib
 
 timeout: "1600s"
