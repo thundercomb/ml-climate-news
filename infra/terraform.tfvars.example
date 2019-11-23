@@ -18,3 +18,4 @@ datasets = [
   "ncei"
 ]
 ml_models_bucket = "ml-models-bucket"
+ml_articles_bucket = "ml-articles-bucket"

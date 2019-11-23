@@ -2,7 +2,4 @@ runtime: python37
 service: serve-climate-news
 env_variables:
     PROJECT: $PROJECT
-resources:
-  cpu: 1
-  memory_gb: 2
-  disk_size_gb: 2
+    ML_ARTICLES_BUCKET: climate-poc-ml-articles-bucket

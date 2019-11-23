@@ -37,3 +37,7 @@ variable "datasets" {
 variable "ml_models_bucket" {
   type = string
 }
+
+variable "ml_articles_bucket" {
+  type = string
+}

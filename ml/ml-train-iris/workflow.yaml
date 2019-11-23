@@ -3,10 +3,10 @@ kind: Workflow
 metadata:
   generateName: iris-
 spec:
-  entrypoint: iris
+  entrypoint: train
   templates:
-  - name: iris
+  - name: train
     container:
-      image: eu.gcr.io/climate-poc-01/ml-iris:latest
+      image: eu.gcr.io/climate-poc-01/ml-train-iris:latest
       command: [python]
-      args: ["iris.py"]
+      args: ["train.py"]

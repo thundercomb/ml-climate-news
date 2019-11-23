@@ -7,3 +7,10 @@ resource "google_storage_bucket" "ml_models_bucket" {
   location           = "EU"
   bucket_policy_only = true
 }
+
+resource "google_storage_bucket" "ml_articles_bucket" {
+  name               = "${var.ml_articles_bucket}"
+  project            = "${var.project}"
+  location           = "EU"
+  bucket_policy_only = true
+}
