@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from google.cloud import storage
-from nltk.tokenize import sent_tokenize
+from gensim.summarization.textcleaner import split_sentences
 
 import os
 import datetime
@@ -11,7 +11,7 @@ def group_sentences(sentence_list, size):
         yield sentence_list[i:i+size]
 
 def create_paragraphs(article_text,paragraph_size):
-    sentence_list = sent_tokenize(article_text)
+    sentence_list = split_sentences(article_text)
     sentences_groups_list = group_sentences(sentence_list,4)
     new_article = ""
     for group in sentences_groups_list:
