@@ -40,7 +40,7 @@ def get_articles(bucket_name, prefix):
         article_text_trim = article_text[0:article_text.rfind('.')+1]
 
         article_text_with_paragraphs = create_paragraphs(article_text_trim,6)
-        article_doc = f"<b><i>{article_datetime_str}</i></b><BR/><BR/>{article_text_with_paragraphs}"
+        article_doc = f"<b>{article_datetime_str}</b><BR/><BR/>{article_text_with_paragraphs}"
         articles.append(article_doc)
 
     articles = articles[::-1]
