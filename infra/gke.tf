@@ -1,7 +1,7 @@
 resource "google_container_cluster" "primary" {
   name     = "primary-gke-cluster"
-  location = "${var.region}"
-  project  = "${var.project}"
+  location = var.region
+  project  = var.project
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
@@ -9,14 +9,14 @@ resource "google_container_cluster" "primary" {
   remove_default_node_pool = true
   initial_node_count       = 1
 
-  depends_on = ["google_project_services.climate_analytics"]
+  depends_on = [google_project_service.climate_analytics]
 }
 
 resource "google_container_node_pool" "primary_preemptible_nodes" {
   name       = "primary-node-pool"
-  location   = "${var.region}"
-  project    = "${var.project}"
-  cluster    = "${google_container_cluster.primary.name}"
+  location   = var.region
+  project    = var.project
+  cluster    = google_container_cluster.primary.name
   node_count = 1
 
   node_config {
@@ -37,5 +37,5 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
     ]
   }
 
-  depends_on = ["google_container_cluster.primary"]
+  depends_on = [google_container_cluster.primary]
 }

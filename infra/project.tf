@@ -4,30 +4,31 @@ resource "google_project" "climate_analytics" {
   billing_account = var.billing_account
 }
 
-resource "google_project_services" "climate_analytics" {
+resource "google_project_service" "climate_analytics" {
   project = var.project
-  services = [
-    "logging.googleapis.com",
-    "bigquery-json.googleapis.com",
-    "appengine.googleapis.com",
-    "pubsub.googleapis.com",
-    "sourcerepo.googleapis.com",
-    "cloudbuild.googleapis.com",
-    "containerregistry.googleapis.com",
-    "storage-api.googleapis.com",
-    "bigquerystorage.googleapis.com",
-    "container.googleapis.com",
-    "compute.googleapis.com",
-    "oslogin.googleapis.com",
-    "iam.googleapis.com",
-    "iamcredentials.googleapis.com"
-  ]
+  for_each = {
+    "logging.googleapis.com"           = "",
+    "bigquery.googleapis.com"          = "",
+    "appengine.googleapis.com"         = "",
+    "pubsub.googleapis.com"            = "",
+    "sourcerepo.googleapis.com"        = "",
+    "cloudbuild.googleapis.com"        = "",
+    "containerregistry.googleapis.com" = "",
+    "storage-api.googleapis.com"       = "",
+    "bigquerystorage.googleapis.com"   = "",
+    "container.googleapis.com"         = "",
+    "compute.googleapis.com"           = "",
+    "oslogin.googleapis.com"           = "",
+    "iam.googleapis.com"               = "",
+    "iamcredentials.googleapis.com"    = ""
+  }
+  service = each.key
 
-  depends_on = ["google_project.climate_analytics"]
+  depends_on = [google_project.climate_analytics]
 }
 
 resource "google_app_engine_application" "app" {
-  project     = "${google_project.climate_analytics.project_id}"
+  project     = google_project.climate_analytics.project_id
   location_id = var.region
 }
 
@@ -39,7 +40,7 @@ resource "google_project_iam_binding" "cloud_build_app_engine" {
     "serviceAccount:${google_project.climate_analytics.number}@cloudbuild.gserviceaccount.com"
   ]
 
-  depends_on = ["google_project_services.climate_analytics"]
+  depends_on = [google_project_service.climate_analytics]
 }
 
 resource "google_project_iam_binding" "editors" {
@@ -52,8 +53,8 @@ resource "google_project_iam_binding" "editors" {
     "serviceAccount:${google_project.climate_analytics.number}@cloudservices.gserviceaccount.com",
   ]
 
-  depends_on = ["google_project_services.climate_analytics",
-  "google_app_engine_application.app"]
+  depends_on = [google_project_service.climate_analytics,
+  google_app_engine_application.app]
 }
 
 resource "google_project_iam_binding" "app_engine_bigquery" {
@@ -64,6 +65,6 @@ resource "google_project_iam_binding" "app_engine_bigquery" {
     "serviceAccount:${google_project.climate_analytics.project_id}@appspot.gserviceaccount.com"
   ]
 
-  depends_on = ["google_project_services.climate_analytics",
-  "google_app_engine_application.app"]
+  depends_on = [google_project_service.climate_analytics,
+  google_app_engine_application.app]
 }

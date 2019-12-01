@@ -3,7 +3,7 @@ resource "google_sourcerepo_repository" "ci_climate_analytics" {
   name     = each.value
   project  = var.project
 
-  depends_on = ["google_project_services.climate_analytics"]
+  depends_on = [google_project_service.climate_analytics]
 }
 
 resource "google_cloudbuild_trigger" "ci_climate_analytics" {
@@ -21,5 +21,5 @@ resource "google_cloudbuild_trigger" "ci_climate_analytics" {
     "*"
   ]
 
-  depends_on = ["google_sourcerepo_repository.ci_climate_analytics"]
+  depends_on = [google_sourcerepo_repository.ci_climate_analytics]
 }
