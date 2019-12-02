@@ -23,7 +23,7 @@ resource "google_cloud_scheduler_job" "ml_generate_climate_news" {
   http_target {
     http_method = "POST"
     uri         = "https://cloudbuild.googleapis.com/v1/projects/${var.project}/triggers/BUILD-ml-generate-climate-news-image:run"
-    body        = base64encode("{\"branch\":\"master\"}")
+    body        = base64encode("{\"branchName\":\"master\"}")
 
     oauth_token {
       service_account_email = "${var.project}@appspot.gserviceaccount.com"
