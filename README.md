@@ -58,7 +58,9 @@ Machine Learning models rely on data. The Google App Engine ingestion services f
 
 There are currently two ingestion services: ncei and clnn. As the platform matures, more data sources will be added.
 
-The ingestion can be run as a one-off as follows.
+Cloud Scheduler ingest the latest CLNN news on a schedule.
+
+The ingestion can also be run as a one-off as follows.
 
 Navigate to
 
@@ -106,7 +108,8 @@ The models are stored in directories on GCS. Kubeflow provides [Minio](https://m
 
 ### Inference and Prediction
 
-For larger models that take more time during inferencing a separate process can speed up serving. For example the ```ml-generate-climate-news``` pipeline can be triggered manually whenever a new news article is required.
+For larger models that take more time during inferencing a separate process can speed up serving.
+The ```ml-generate-climate-news``` pipeline is configured to run daily using Cloud Scheduler so that a new article is generated daily.
 
 ## Serving
 
@@ -117,6 +120,10 @@ The iris sample web service is a good entrypoint. Once you have trained a model 
 `https://serve-iris-predictions-dot-<my-project-id>.appspot.com/`
 
 You will be shown the iris model's targets and predictions.
+
+The Climate News serving app is available at:
+
+`https://serve-iris-predictions-dot-<my-project-id>.appspot.com/`
 
 # DevOps and MLOps
 
