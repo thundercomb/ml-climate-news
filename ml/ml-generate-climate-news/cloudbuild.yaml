@@ -1,10 +1,32 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'eu.gcr.io/${PROJECT_ID}/${_IMAGE_NAME}', '.']
+
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'eu.gcr.io/${PROJECT_ID}/${_IMAGE_NAME}']
+
+- name: "gcr.io/cloud-builders/gsutil"
+  args: ['cp', 'gs://${_ML_MODELS_BUCKET}/clnn-news/*latest', '${_MODEL_ARCHIVE}']
+  dir: /workspace
+
+- name: "gcr.io/cloud-builders/gsutil"
+  entrypoint: 'sh'
+  dir: /workspace
+  args:
+  - '-c'
+  - |
+    mkdir checkpoint && mv ${_MODEL_ARCHIVE} checkpoint && cd checkpoint && unzip ${_MODEL_ARCHIVE} && rm ${_MODEL_ARCHIVE}
+
 - name: 'eu.gcr.io/${PROJECT_ID}/${_IMAGE_NAME}'
   entrypoint: sh
   args: ['-c', 'python3 generate.py']
+  env:
+  - 'ML_ARTICLES_BUCKET=${_ML_ARTICLES_BUCKET}'
+  - 'TEMPERATURE=${_TEMPERATURE}'
+
 substitutions:
+  _ML_MODELS_BUCKET: climate-poc-ml-models-bucket
+  _MODEL_ARCHIVE: clnn-model.zip
+  _ML_ARTICLES_BUCKET: climate-poc-ml-articles-bucket
   _IMAGE_NAME: ml-generate-climate-news
+  _TEMPERATURE: '1.0'
