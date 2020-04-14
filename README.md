@@ -1,3 +1,7 @@
+# This repo is deprecated
+
+Please see the [new repo](https://github.com/thundercomb/platform-inception).
+
 # Purpose
 
 ML Climate News is an end-to-end machine learning platform [serving climate change fake news](https://serve-climate-news-dot-climate-poc-01.appspot.com/).
